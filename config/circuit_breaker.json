@@ -1,0 +1,1 @@
+{"action_on_trip":"switch_to_next_cheapest_free_tier","cool_down_period_sec":60,"monitor_intervals_ms":5000,"tpm_threshold_alert":150000,"consecutive_failures_limit":3}

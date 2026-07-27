@@ -1,0 +1,1 @@
+{"identity_tier":{"wholelychit":"unlimited"},"window_ms":60000,"action_on_breach":"queue_and_throttle","max_requests_per_window":120}

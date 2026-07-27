@@ -1,0 +1,1 @@
+{"allowed_headers":["Content-Type","Authorization","X-OmniRoute-Mode"],"allow_credentials":true,"allowed_origins":["vscode-webview://*","chrome-extension://*","http://localhost:*"],"allowed_methods":["GET","POST","OPTIONS"]}

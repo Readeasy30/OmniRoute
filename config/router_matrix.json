@@ -1,0 +1,20 @@
+{
+  "gateway_port": 20128,
+  "load_balancing": "adaptive_latency",
+  "virtual_combos": {
+    "auto": [
+      { "provider": "pollinations", "model": "openai", "tier": "free" },
+      { "provider": "zenmax", "model": "free-pool", "tier": "free" }
+    ],
+    "auto/coding": [
+      { "provider": "pollinations", "model": "qwen", "tier": "free" },
+      { "provider": "zenmax", "model": "free-pool", "tier": "free" }
+    ],
+    "auto/fast": [
+      { "provider": "pollinations", "model": "openai", "tier": "free" }
+    ],
+    "auto/cheap": [
+      { "provider": "pollinations", "model": "openai", "tier": "free" }
+    ]
+  }
+}

@@ -1,0 +1,7 @@
+{
+    "API_BASE":  "http://localhost:20128/v1",
+    "STATUS":  "PRODUCTION_READY",
+    "OPTIMIZATION_LEVEL":  "MAX_SPEED_V8",
+    "OWNER":  "wholelychit",
+    "COMPILATION_DATE":  "2026-07-27"
+}

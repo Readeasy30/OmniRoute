@@ -1,0 +1,13 @@
+{
+  "user_profile": "wholelychit",
+  "master_token": "sk-wholelychit-01",
+  "routing_matrix": {
+    "default": "no-think/aug/claude-haiku-4.5",
+    "fallback_chain": ["open_code_free", "pollinations", "zenmax"]
+  },
+  "performance_tuning": {
+    "stream_buffer_ms": 10,
+    "max_concurrent_connections": 100,
+    "auto_retry_on_ratelimit": true
+  }
+}

@@ -5,20 +5,20 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-and-pack:
-    name: Container Build & Verify
+  build-and-deploy:
+    name: Clean Production Compile & Push
     runs-on: ubuntu-latest
     steps:
-      - name: Source Synchronization
+      - name: Source Tree Synchronization
         uses: actions/checkout@v4
 
-      - name: Set Up Node Environment
+      - name: Setup Node Environment
         uses: actions/setup-node@v4
         with:
           node-version: '20'
 
-      - name: Clean Module Ingestion
+      - name: Forced Peer Dependency Installation
         run: npm install --legacy-peer-deps --prefer-online --no-audit
 
-      - name: Build Local Source Binary
+      - name: Execute High-Performance Build
         run: npm run build

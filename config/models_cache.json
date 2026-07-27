@@ -1,0 +1,10 @@
+{
+    "fallback_sequence":  [
+                              "no-think/aug/claude-haiku-4.5",
+                              "open_code_free",
+                              "pollinations"
+                          ],
+    "active_profile":  "wholelychit",
+    "performance_tier":  "extreme",
+    "last_synchronized":  "2026-07-27 09:15:49"
+}
