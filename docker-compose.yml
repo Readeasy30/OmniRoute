@@ -1,0 +1,18 @@
+version: '3.8'
+services:
+  gateway:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: omniroute-core-wholelychit
+    ports:
+      - "20128:20128"
+    environment:
+      - NODE_ENV=production
+      - PORT=20128
+      - APP_LOG_LEVEL=info
+    restart: always
+    deploy:
+      resources:
+        limits:
+          memory: 4096M
