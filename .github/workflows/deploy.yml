@@ -12,33 +12,13 @@ jobs:
       - name: Source Synchronization
         uses: actions/checkout@v4
 
-      - name: Set Up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Build and Cache Local Image Assets
-        uses: docker/build-push-action@v5
+      - name: Set Up Node Environment
+        uses: actions/setup-node@v4
         with:
-          context: .
-          file: ./Dockerfile
-          push: false
-          tags: readeasy30/omniroute:latest
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          node-version: '20'
 
-  deploy-edge:
-    name: Local Node Core Sync
-    needs: build-and-pack
-    runs-on: windows-latest
-    steps:
-      - name: Execute Live Deployment Pull
-        shell: powershell
-        run: |
-          cd "\C:\Users\Carol\OmniRoute"
-          git config --global user.name "wholelychit"
-          git config --global user.email "wholelychit@://github.com"
-          git fetch --all
-          git reset --hard origin/main
-          npm install --legacy-peer-deps --prefer-online --no-audit
-          npm run build
-          Stop-Process -Name "node" -Force -ErrorAction SilentlyContinue
-          Start-Process -FilePath "npm" -ArgumentList "run start" -NoNewWindow
+      - name: Clean Module Ingestion
+        run: npm install --legacy-peer-deps --prefer-online --no-audit
+
+      - name: Build Local Source Binary
+        run: npm run build
