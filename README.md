@@ -127,3 +127,36 @@ omniroute/
 ├── docker-compose.yml    <-- For containerized running
 ├── LICENSE               <-- Your license text (e.g., MIT)
 └── CONTRIBUTING.md       <-- Contribution guidelines
+## ☁️ Cloud-Native Multi-Machine Quick Start Guide
+
+This repository is optimized to run without local Docker dependencies. Configurations and API routing structures are managed completely off your physical hard drives via Cloudflare Workers KV pairs. This allows you to stand up an operational environment with **Gemini 3.6 Flash/Express** instantly on any machine you sit down at.
+
+### 🛠️ One-Line System Initialization (On Any New Computer)
+
+Whenever you open a fresh computer, clone this repository, open an **Administrative PowerShell** terminal, and execute this single line to provision the gateway, link Cloudflare, and bind your system macros:
+
+```powershell
+npm install -g omniroute wrangler; [System.IO.Path]::Combine(\(env:USERPROFILE, ".omniroute") \vert{} \% { if (-not (Test-Path \)_)) { New-Item -ItemType Directory -Path \(_ -Force } }; Set-Content -Path (Join-Path [System.IO.Path]::Combine(\)env:USERPROFILE, ".omniroute") ".env") -Value "OMNIROUTE_PORT=20128`nOMNIROUTE_FALLBACK_DEFAULT=`"gemini-3.6-flash`"" -Encoding Utf8 -Force; [Environment]::SetEnvironmentVariable("OMNIROUTE_BASE_URL", "http://localhost:20128/v1", "User"); [Environment]::SetEnvironmentVariable("ANTHROPIC_BASE_URL", "http://localhost:20128", "User"); [Environment]::SetEnvironmentVariable("ANTHROPIC_MODEL", "gemini-3.6-flash", "User"); $profileDir = Split-Path $PROFILE -Parent; if (-not (Test-Path $profileDir)) { New-Item -ItemType Directory -Path $profileDir -Force | Out-Null }; Add-Content -Path $PROFILE -Value "`nfunction omni { Write-Host '🚀 Launching Edge Gateway...' -ForegroundColor Cyan; omniroute }" -Force; Write-Host "✓ System Fully Operational! Restart PowerShell and type 'omni' to boot." -ForegroundColor Green
+```
+
+### 🚀 Daily Launch Command
+
+Once the initialization pass is completed on your active machine, you never have to remember folder paths or local `.env` keys again. In any open terminal window, simply type:
+
+```powershell
+omni
+```
+
+The application proxy will reach out to Cloudflare over secure channels, grab your remote **Gemini 3.6 Flash** tokens, and boot your functional proxy gateway instantly on port `20128`.
+
+### 🔌 Zero-Config Editor Connections
+
+With the global gateway running natively, hook up your daily development applications using these parameters:
+
+#### 1. Cursor / OpenCode Config
+* **Override Base URL:** `http://localhost:20128/v1`
+* **API Key:** `any-string-value` (Bypassed via proxy routing)
+* **Target Model ID String:** `gemini-3.6-flash`
+
+#### 2. Claude Code CLI Config
+No extra steps required. Because the setup initialization injects system environment handles (`ANTHROPIC_BASE_URL`), Claude Code will automatically route traffic straight to your local OmniRoute engine, running queries through your optimized Gemini 3.6 pipeline seamlessly.
