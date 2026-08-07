@@ -1,18 +1,67 @@
-version: '3.8'
-services:
-  gateway:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: omniroute-core-wholelychit
-    ports:
-      - "20128:20128"
-    environment:
-      - NODE_ENV=production
-      - PORT=20128
-      - APP_LOG_LEVEL=info
-    restart: always
-    deploy:
-      resources:
-        limits:
-          memory: 4096M
+# ============================================================
+# Omniroute Configuration Template
+# ============================================================
+# Copy this file to `omniroute.yaml` and fill in your real values.
+# NEVER commit the real `omniroute.yaml` — it is in .gitignore.
+# Put your API keys ONLY in the local copy on your machine.
+# ============================================================
+
+version: "1.0"
+
+server:
+  port: 20128
+
+# ----------------------------------------------------------
+# Routing combos — group multiple providers behind one name.
+# strategy options: auto, priority, round_robin, fill_first,
+#                   cost_optimized, p2c
+# ----------------------------------------------------------
+combos:
+  - name: free-coding-stack
+    strategy: auto
+    nodes:
+      - provider: anthropic
+        model: claude-3-5-sonnet
+        # api_key: <YOUR_ANTHROPIC_API_KEY>   # set in local copy only
+      - provider: openai
+        model: gpt-4o
+        # api_key: <YOUR_OPENAI_API_KEY>     # set in local copy only
+      - provider: deepseek
+        model: deepseek-coder
+        # api_key: <YOUR_DEEPSEEK_API_KEY>   # set in local copy only
+
+# ----------------------------------------------------------
+# Providers — each key goes in your LOCAL copy only.
+# Keyless providers (like pollinations) need no key.
+# ----------------------------------------------------------
+providers:
+  pollinations:
+    enabled: true  # Keyless provider — no API key needed
+
+  openai:
+    enabled: false
+    # api_key: <YOUR_OPENAI_API_KEY>
+    # base_url: https://api.openai.com/v1
+
+  anthropic:
+    enabled: false
+    # api_key: <YOUR_ANTHROPIC_API_KEY>
+    # base_url: https://api.anthropic.com/v1
+
+  deepseek:
+    enabled: false
+    # api_key: <YOUR_DEEPSEEK_API_KEY>
+    # base_url: https://api.deepseek.com/v1
+
+  google:
+    enabled: false
+    # api_key: <YOUR_GOOGLE_AI_API_KEY>
+    # model: gemini-2.0-flash
+
+# ----------------------------------------------------------
+# Optional: rate limiting & fallback tuning
+# ----------------------------------------------------------
+routing:
+  fallback_enabled: true
+  max_retries: 3
+  timeout: 30s
