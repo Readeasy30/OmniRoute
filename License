@@ -1,0 +1,46 @@
+MIT License
+
+Copyright (c) 2026 Omniroute Authors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+---
+
+**LICENSE**
+
+---
+
+**CONTRIBUTING.md**
+
+```markdown
+# Contributing to Omniroute
+
+Thank you for considering contributing to Omniroute!
+
+## How to contribute
+
+1. **Report bugs** — open an issue describing the bug and steps to reproduce.
+2. **Suggest features** — open an issue outlining your proposed idea.
+3. **Submit code:**
+   - Fork the repo and create a branch from `main`.
+   - Ensure code conforms to standard formatting tools (e.g. `gofmt`, `prettier`).
+   - Add tests covering your changes.
+   - Open a Pull Request referencing the related issue.
+
+## Security
+
+- **Never commit API keys, tokens, or secrets.** The real `omniroute.yaml`
+  and `.env` files are gitignored for this reason.
+- If you accidentally commit a secret, rotate it immediately at the provider
+  and remove it from git history.
+- Do not add setup scripts that modify shell profiles, install global
+  packages, or set environment variables without explicit user consent.
+
+## Code of conduct
+
+Be respectful and constructive. Harassment or abusive behavior will not be
+tolerated.
+
