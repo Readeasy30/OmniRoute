@@ -1,0 +1,6 @@
+cp omniroute.yaml.example omniroute.yaml
+Security notes
+Never paste and run one-liner install commands you do not understand. Review any setup script before executing it.
+Store API keys only in your local omniroute.yaml (gitignored).
+Rotate any keys you may have accidentally exposed or committed.
+If you expose the gateway remotely, put it behind an authenticated reverse proxy (such as Cloudflare Tunnel + Access) and never leave the port open to the public internet.
