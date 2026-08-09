@@ -42,3 +42,7 @@ logs/
 *.sqlite
 *.sqlite3
 
+.env
+data/
+watchdog-errors.log
+
