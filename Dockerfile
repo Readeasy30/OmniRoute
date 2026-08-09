@@ -25,3 +25,16 @@ COPY --from=builder /app/package.json ./package.json
 USER nextjs
 EXPOSE 20128
 CMD ["npm", "run", "start"]
+
+# Stage 1: Build Caddy with the required external DNS modules
+FROM caddy:2.8.4-builder AS builder
+
+# Inject Cloudflare and AWS Route53 DNS validation providers
+RUN xcaddy build \
+    --with ://github.com \
+    --with ://github.com
+
+# Stage 2: Produce the minimal, hardened runtime image
+FROM caddy:2.8.4-alpine
+
+COPY --from=builder /usr/bin/caddy /usr/bin/caddy
