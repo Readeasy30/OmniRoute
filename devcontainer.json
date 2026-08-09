@@ -1,0 +1,12 @@
+{
+  "name": "OmniRoute Browser Cloud Gateway",
+  "image": "://microsoft.com",
+  "forwardPorts":,
+  "portsAttributes": {
+    "20128": { "label": "OmniRoute Proxy Engine", "onAutoForward": "silent" },
+    "3000": { "label": "Web Chat Interface", "onAutoForward": "openPreview" }
+  },
+  "postCreateCommand": "npm install -g omniroute express || true",
+  "postStartCommand": "echo 'Initializing automated tasks...'",
+  "waitFor": "postCreateCommand"
+}
