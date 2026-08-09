@@ -46,3 +46,23 @@ logs/
 data/
 watchdog-errors.log
 
+  caddy-proxy:
+    image: caddy:latest
+    container_name: caddy-proxy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+      - ./data/logs:/var/log/caddy
+    networks:
+      - omniroute-tier
+    depends_on:
+      - omniroute-gateway
+
+volumes:
+  caddy_data:
+  caddy_config:
