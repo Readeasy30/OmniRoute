@@ -1,0 +1,63 @@
+version: "1.0"
+
+server:
+  port: 20128
+
+# ------------------------------------------------------------------------------
+# Routing Architectures: Stacking failbacks from premium to fallback topologies
+# ------------------------------------------------------------------------------
+combos:
+  - name: production-coder-stack
+    strategy: priority # Progresses strictly from top to bottom based on failure states
+    nodes:
+      - provider: deepseek
+        model: deepseek-coder
+      - provider: anthropic
+        model: claude-3-5-sonnet
+      - provider: openai
+        model: gpt-4o
+      - provider: pollinations # Zero-auth open pool used as the ultimate fail-safe backup node
+        model: auto
+
+  - name: cost-optimized-stack
+    strategy: cost_optimized # Selects underlying structures based on ongoing token tracking metrics
+    nodes:
+      - provider: google
+        model: gemini-2.0-flash
+      - provider: deepseek
+        model: deepseek-chat
+
+# ------------------------------------------------------------------------------
+# Provider Configurations — Secrets must be loaded via local environment space
+# ------------------------------------------------------------------------------
+providers:
+  pollinations:
+    enabled: true # Keyless infrastructure provider logic
+
+  deepseek:
+    enabled: true
+    api_key: ${DEEPSEEK_API_KEY} # Seamless extraction from local execution variables
+
+  anthropic:
+    enabled: true
+    api_key: ${ANTHROPIC_API_KEY}
+
+  openai:
+    enabled: true
+    api_key: ${OPENAI_API_KEY}
+
+  google:
+    enabled: true
+    api_key: ${GOOGLE_AI_API_KEY}
+
+# ------------------------------------------------------------------------------
+# System Compression Pipeline & Optimization Gating Rules
+# ------------------------------------------------------------------------------
+routing:
+  fallback_enabled: true
+  max_retries: 3
+  timeout: 35s
+  # Performance payload layer reducing network ingestion burdens
+  context_compression:
+    enabled: true
+    strategy: rtk_caveman # Saves 15-95% on eligible upstream text parsing context frames
