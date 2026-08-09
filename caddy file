@@ -1,0 +1,22 @@
+://yourdomain.com {
+    # Automatic TLS via Cloudflare DNS API Challenge
+    tls {
+        dns cloudflare {$CLOUDFLARE_API_TOKEN}
+    }
+
+    # Restrict dashboard access to specific trusted local CIDR blocks
+    @trusted_ips {
+        remote_ip 127.0.0.1 192.168.1.0/24 10.0.0.0/8
+    }
+
+    # Apply access rules specifically to internal dashboard paths
+    handle /dashboard* {
+        @untrusted not remote_ip 127.0.0.1 192.168.1.0/24 10.0.0.0/8
+        respond @untrusted "Access Denied: Source IP Address Unauthorized" 403
+    }
+
+    reverse_proxy omniroute-gateway:20128 {
+        header_up Host {host}
+        header_up X-Real-IP {remote_host}
+    }
+}
