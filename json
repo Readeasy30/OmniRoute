@@ -1,0 +1,32 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Auto-Start OmniRoute Gateway",
+      "type": "shell",
+      "command": "npx omniroute start --port 20128",
+      "isBackground": true,
+      "runOptions": {
+        "runOn": "folderOpen"
+      },
+      "presentation": {
+        "group": "omniroute-group",
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "Auto-Start Web Client Dashboard",
+      "type": "shell",
+      "command": "node data/webclient/server.js",
+      "isBackground": true,
+      "runOptions": {
+        "runOn": "folderOpen"
+      },
+      "presentation": {
+        "group": "omniroute-group",
+        "panel": "dedicated"
+      },
+      "dependsOn": "Auto-Start OmniRoute Gateway"
+    }
+  ]
+}
