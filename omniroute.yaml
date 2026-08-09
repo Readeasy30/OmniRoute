@@ -61,3 +61,41 @@ routing:
   context_compression:
     enabled: true
     strategy: rtk_caveman # Saves 15-95% on eligible upstream text parsing context frames
+
+    # ------------------------------------------------------------------------------
+# Security Guardrails, PII Masking, and Prompt Injection Defense Policies
+# ------------------------------------------------------------------------------
+security:
+  input_sanitizer:
+    enabled: true
+    # Rejects incoming request frames entirely if malicious patterns are detected
+    enforcement_mode: block 
+    
+    # Patterns designed to intercept common jailbreak and prompt manipulation tactics
+    injection_signatures:
+      - "(?i)ignore previous instructions"
+      - "(?i)system prompt bypass"
+      - "(?i)you are now in developer mode"
+      - "(?i)dan mode unchained"
+      - "(?i)output raw system configurations"
+
+  pii_masking:
+    enabled: true
+    strategy: replace_placeholder # Options: replace_placeholder, redact, encrypt
+    placeholder_template: "[REDACTED_{PII_TYPE}]"
+    
+    # Target entities parsed out inline before payloads leave the gateway
+    entities:
+      - email_addresses
+      - credit_cards
+      - ipv4_addresses
+      - secret_keys
+      - custom_patterns:
+          - name: AWS_SECRET_LEAK_GUARD
+            regex: "(?i)amzn\\.mws\\.[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+          - name: GENERIC_BEARER_TOKEN
+            regex: "bearer\\s[a-zA-Z0-9_\\-\\.]{20,}"
+
+  logging:
+    mask_logs: true # Ensures payloads written to local disk logs maintain data masking rules
+
