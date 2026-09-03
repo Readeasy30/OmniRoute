@@ -1,25 +1,31 @@
-name: Production Docker Build & Edge Proxy Deploy
+
+name: Cloudflare Edge OmniRoute Deploy
 
 on:
   push:
-    branches: [ main ]
-  workflow_dispatch:
-  schedule:
-    - cron: "*/15 * * * *"
+    branches:
+      - main
 
 jobs:
-  validate-deployment-tree:
+  deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Source Tree Synchronization
+      - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Enforce Architecture Compliance
-        run: |
-          echo ">>> Core pipelines successfully verified active under profile wholelychit."
-          echo ">>> All standalone maintenance and watchdog scripts preserved."
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
 
-      - name: 24-Hour Health Check
+      - name: Install Project Dependencies
         run: |
-          echo ">>> Scheduled 24-hour deployment health check completed."
-          echo ">>> Timestamp: $(date -u '+%Y-%m-%dT%H:%M:%SZ')"
+          npm init -y
+          npm install wrangler --save-dev
+
+      - name: Deploy Worker to Cloudflare Edge
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: deploy --name omniroute-edge-gateway
