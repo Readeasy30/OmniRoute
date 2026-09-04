@@ -1,6 +1,7 @@
 import json, requests, os, re
 class GManWebBuilderAgent:
     def __init__(self):
+        # HARD DATA TRACK FIX: Explicitly direct traffic to the completions control plane path
         self.gateway_url = "https://workers.dev"
         self.output_dir = os.path.abspath("generated_sites")
         if not os.path.exists(self.output_dir):
@@ -16,13 +17,12 @@ class GManWebBuilderAgent:
             res = requests.post(self.gateway_url, json=payload, headers={"Content-Type": "application/json"})
             data = res.json()
             
-            # Universal Extraction: Read both custom worker or standardized choice formats
-            if "result" in data and isinstance(data["result"], dict) and "response" in data["result"]:
+            if "choices" in data and len(data["choices"]) > 0:
+                ai_response = data["choices"][0]["message"]["content"]
+            elif "result" in data and isinstance(data["result"], dict) and "response" in data["result"]:
                 ai_response = data["result"]["response"]
             elif "result" in data and isinstance(data["result"], str):
                 ai_response = data["result"]
-            elif "choices" in data and len(data["choices"]) > 0:
-                ai_response = data["choices"][0]["message"]["content"]
             else:
                 ai_response = data.get("response", str(data))
                 
@@ -34,7 +34,6 @@ class GManWebBuilderAgent:
                     f.write(extracted_html)
                 print(f"[BUILD SYSTEM SUCCESS]: Generated asset written cleanly to: {output_file}")
             else:
-                # If no code blocks are initialized yet, write raw response string as temporary asset wrapper
                 output_file = os.path.join(self.output_dir, "index.html")
                 with open(output_file, "w", encoding="utf-8") as f:
                     f.write(f"<html><body style=\"background:#000;color:#0f0;font-family:monospace;padding:50px;\"><h2>[G-MAN INTERCEPT]:</h2><p>{ai_response}</p></body></html>")
