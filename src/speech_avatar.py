@@ -1,4 +1,4 @@
-import json, requests, os, re
+import urllib.request, urllib.error, json, os, re
 
 class GManMultiPageAgent:
     def __init__(self):
@@ -6,10 +6,10 @@ class GManMultiPageAgent:
         self.output_dir = os.path.abspath("generated_sites")
         if not os.path.exists(self.output_dir):
             os.makedirs(self.output_dir)
-        print(f"[OMNI-AGENT V3.1 ONLINE]: Hardened Multi-Page Code Scraper active. Path: {self.output_dir}")
+        print(f"[OMNI-AGENT V3.2 ONLINE]: Core urllib network engine loaded. Path: {self.output_dir}")
 
     def build_complete_website(self, user_request):
-        print(f"[AGENT TRACKING]: Architecting separate project files for: `{user_request}`")
+        print(f"[AGENT TRACKING]: Architecting site layout structures for: `{user_request}`")
         
         system_instructions = (
             "You are the G-Man Multi-Page Web Builder Agent. You must generate full code for THREE separate files: "
@@ -25,11 +25,19 @@ class GManMultiPageAgent:
             {"role": "user", "content": user_request}
         ]}
         
+        data_bytes = json.dumps(payload).encode("utf-8")
+        req = urllib.request.Request(
+            self.gateway_url, 
+            data=data_bytes, 
+            headers={"Content-Type": "application/json", "User-Agent": "Mozilla/5.0"}
+        )
+        
         try:
-            res = requests.post(self.gateway_url, json=payload, headers={"Content-Type": "application/json"})
-            data = res.json()
+            with urllib.request.urlopen(req) as response:
+                raw_data = response.read().decode("utf-8")
+                data = json.loads(raw_data)
             
-            ai_response = data["result"]["response"] if "result" in data else data["choices"]["message"]["content"]
+            ai_response = data["result"]["response"] if "result" in data else data["choices"][0]["message"]["content"]
 
             files_to_extract = ["index.html", "about.html", "contact.html"]
             found_any = False
@@ -56,7 +64,7 @@ class GManMultiPageAgent:
 
             return ai_response
         except Exception as e:
-            print(f"[UPGRADE FAILOVER]: Connection issue. Error: {e}")
+            print(f"[UPGRADE FAILOVER]: Trace circuit hit a lock. Error: {e}")
             return "Unforeseen... complications..."
 
 if __name__ == "__main__":
