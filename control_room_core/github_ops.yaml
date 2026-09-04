@@ -1,0 +1,7 @@
+github_automation_pipeline:
+  trigger: push
+  branch: main
+  actions:
+    - name: Purge Dead Metrics
+    - name: Inject Hardened Security Gates
+    - name: Synchronize Global Workspace Context

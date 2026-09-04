@@ -1,0 +1,7 @@
+{
+  "agent_profile": {
+    "name": "Executive-OS-Oracle",
+    "role": "Autonomous System Manager",
+    "permissions": ["read_repo", "write_repo", "trigger_edge_deploy"]
+  }
+}
