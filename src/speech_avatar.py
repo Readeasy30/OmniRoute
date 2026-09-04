@@ -2,7 +2,8 @@ import json, requests, os, re
 
 class GManMultiPageAgent:
     def __init__(self):
-        self.gateway_url = "https://workers.dev"
+        # HARD DATA TRACK FIXED: Explicit endpoint mapping path for direct JSON extraction
+        self.gateway_url = "https://omniroute-edge-gateway.wholelychit.workers.dev"
         self.output_dir = os.path.abspath("generated_sites")
         if not os.path.exists(self.output_dir):
             os.makedirs(self.output_dir)
@@ -39,7 +40,6 @@ class GManMultiPageAgent:
             found_any = False
 
             for filename in files_to_extract:
-                # Find content between the filename header and its closing code block boundary
                 pattern = rf"---{filename}---\s*```html\s*(.*?)\s*```"
                 match = re.search(pattern, ai_response, re.DOTALL)
                 
@@ -52,7 +52,6 @@ class GManMultiPageAgent:
                     found_any = True
 
             if not found_any:
-                # Fallback: If formatting patterns mismatch, extract the first raw block as index.html
                 fallback_match = re.search(r"```html\s*(.*?)\s*```", ai_response, re.DOTALL)
                 extracted_code = fallback_match.group(1) if fallback_match else ai_response
                 target_file = os.path.join(self.output_dir, "index.html")
