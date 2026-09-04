@@ -1,5 +1,6 @@
 export default {
   async fetch(request, env) {
+    // 1. Universal Edge CORS Handshake Matrix
     if (request.method === "OPTIONS") {
       return new Response(null, {
         headers: {
@@ -11,7 +12,7 @@ export default {
     }
 
     if (request.method !== "POST") {
-      return new Response(JSON.stringify({ error: "Only POST actions supported." }), { 
+      return new Response(JSON.stringify({ error: "Only POST actions are supported on this edge routing vector." }), { 
         status: 405, headers: { "Content-Type": "application/json" } 
       });
     }
@@ -19,13 +20,13 @@ export default {
     try {
       const payload = await request.json();
       const userMessages = payload.messages || [];
-      
-      // Enforce the Multi-Page System Instruction Prompts directly inside the Cloud Core Plane
-      const cloudInstructions = {
+
+      // 2. Strict Architectural Prompts - Forcing clear markdown multi-page boundary generation
+      const designGuardrails = {
         role: "system",
         content: (
-          "You are the G-Man Multi-Page Web Builder Agent running natively on the Cloudflare Edge network. "
-          "You must generate full code for THREE separate files: index.html, about.html, and contact.html matching the user request. "
+          "You are the G-Man Autonomous Multi-Page Web Builder Agent running natively on the Cloudflare Edge network. "
+          "Your job is to write full code for THREE separate files: index.html, about.html, and contact.html matching the user prompt. "
           "You MUST output each file inside its own explicit block structure, preceded by its exact file marker line, like this:\n"
           "FILE:index.html\n```html\n(code here)\n```\n"
           "FILE:about.html\n```html\n(code here)\n```\n"
@@ -33,32 +34,32 @@ export default {
         )
       };
 
-      const consolidatedMessages = [cloudInstructions, ...userMessages];
+      const systemInputPayload = [designGuardrails, ...userMessages];
 
-      // Execute primary model tracking logic natively on Cloudflare AI matrix bindings
+      // 3. Native Model Execution Context Bindings
       const aiResponse = await env.AI.run("@cf/qwen/qwen3.8-27b", {
-        messages: consolidatedMessages
+        messages: systemInputPayload
       });
 
-      const generatedText = aiResponse.response || aiResponse;
+      const extractedCoreResponseText = aiResponse.response || aiResponse;
 
-      // Output pristine OpenAI formatted JSON object payload directly to edge networks
+      // 4. OpenAI Chat Completions Standard Serialization Delivery Protocol
       return new Response(JSON.stringify({
         id: `chatcmpl-${crypto.randomUUID()}`,
         object: "chat.completion",
         created: Math.floor(Date.now() / 1000),
-        model: "qwen-3.8-27b-edge-multipage",
+        model: "qwen-3.8-27b-edge-multipage-production",
         choices: [{
           index: 0,
-          message: { role: "assistant", content: generatedText },
+          message: { role: "assistant", content: extractedCoreResponseText },
           finish_reason: "stop"
         }]
       }), { headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" } });
 
-    } catch (globalError) {
+    } catch (globalClusterError) {
       return new Response(JSON.stringify({ 
-        error: "OmniRoute Cloud Edge Exception", 
-        details: globalError.message 
+        error: "OmniRoute Infrastructure Server Exception", 
+        details: globalClusterError.message 
       }), { status: 500, headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" } });
     }
   }
