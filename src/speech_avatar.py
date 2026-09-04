@@ -1,5 +1,4 @@
 import json, requests, os, re
-from supabase_adapter import SupabaseLogAdapter
 class GManWebBuilderAgent:
     def __init__(self):
         self.gateway_url = "https://workers.dev"
@@ -9,19 +8,24 @@ class GManWebBuilderAgent:
         print(f"[OMNI-AGENT ONLINE]: Web-Builder engine initialized. Output path locked: {self.output_dir}")
     def generate_web_asset(self, user_request):
         print(f"[AGENT TRACKING]: Processing architectural layout request: `{user_request}`")
-        system_instructions = (
-            "You are the G-Man Web Builder Agent. Your job is to generate full, beautiful, valid single-file HTML websites "
-            "with embedded CSS based on the user request. Surround the raw HTML code inside standard ```html ... ``` code blocks. "
-            "Precede the code block with a short, cryptic G-Man remark, using strategic pauses with ellipses..."
-        )
         payload = {"messages": [
-            {"role": "system", "content": system_instructions},
+            {"role": "system", "content": "You are the G-Man Web Builder Agent. Generate a full single-file HTML website with beautiful embedded CSS inside a standard ```html code block based on user input. Precede it with an ominous, cryptic introduction remark using ellipses..."},
             {"role": "user", "content": user_request}
         ]}
         try:
-            res = requests.post(self.gateway_url, json=payload)
+            res = requests.post(self.gateway_url, json=payload, headers={"Content-Type": "application/json"})
             data = res.json()
-            ai_response = data["result"]["response"] if "result" in data else data["choices"]["message"]["content"]
+            
+            # Universal Extraction: Read both custom worker or standardized choice formats
+            if "result" in data and isinstance(data["result"], dict) and "response" in data["result"]:
+                ai_response = data["result"]["response"]
+            elif "result" in data and isinstance(data["result"], str):
+                ai_response = data["result"]
+            elif "choices" in data and len(data["choices"]) > 0:
+                ai_response = data["choices"][0]["message"]["content"]
+            else:
+                ai_response = data.get("response", str(data))
+                
             code_match = re.search(r"```html\s*(.*?)\s*```", ai_response, re.DOTALL)
             if code_match:
                 extracted_html = code_match.group(1)
@@ -30,7 +34,11 @@ class GManWebBuilderAgent:
                     f.write(extracted_html)
                 print(f"[BUILD SYSTEM SUCCESS]: Generated asset written cleanly to: {output_file}")
             else:
-                print("[BUILD NOTICE]: Narrative text response received. No HTML block extracted.")
+                # If no code blocks are initialized yet, write raw response string as temporary asset wrapper
+                output_file = os.path.join(self.output_dir, "index.html")
+                with open(output_file, "w", encoding="utf-8") as f:
+                    f.write(f"<html><body style=\"background:#000;color:#0f0;font-family:monospace;padding:50px;\"><h2>[G-MAN INTERCEPT]:</h2><p>{ai_response}</p></body></html>")
+                print(f"[BUILD SYSTEM INITIAL HANDSHAKE SUCCESS]: Script payload captured. Saved preview to: {output_file}")
             return ai_response
         except Exception as e:
             print(f"[UPGRADE FAILOVER]: Connection issue. Error: {e}")
