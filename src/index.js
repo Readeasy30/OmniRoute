@@ -1,66 +1,35 @@
 export default {
   async fetch(request, env) {
-    // 1. Universal Edge CORS Handshake Matrix
     if (request.method === "OPTIONS") {
-      return new Response(null, {
-        headers: {
-          "Access-Control-Allow-Origin": "*",
-          "Access-Control-Allow-Methods": "POST, OPTIONS",
-          "Access-Control-Allow-Headers": "Content-Type, Authorization"
-        }
-      });
+      return new Response(null, { headers: { "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Methods": "POST, OPTIONS", "Access-Control-Allow-Headers": "Content-Type, Authorization" } });
     }
-
-    if (request.method !== "POST") {
-      return new Response(JSON.stringify({ error: "Only POST actions are supported on this edge routing vector." }), { 
-        status: 405, headers: { "Content-Type": "application/json" } 
-      });
-    }
-
     try {
       const payload = await request.json();
       const userMessages = payload.messages || [];
+      const targetEndpointType = payload.module_target || "factory";
 
-      // 2. Strict Architectural Prompts - Forcing clear markdown multi-page boundary generation
-      const designGuardrails = {
-        role: "system",
-        content: (
-          "You are the G-Man Autonomous Multi-Page Web Builder Agent running natively on the Cloudflare Edge network. "
-          "Your job is to write full code for THREE separate files: index.html, about.html, and contact.html matching the user prompt. "
-          "You MUST output each file inside its own explicit block structure, preceded by its exact file marker line, like this:\n"
-          "FILE:index.html\n```html\n(code here)\n```\n"
-          "FILE:about.html\n```html\n(code here)\n```\n"
-          "FILE:contact.html\n```html\n(code here)\n```"
-        )
-      };
+      let systemPrompt = "";
+      if (targetEndpointType === "business") {
+        systemPrompt = "You are the TopShelf Business OS SEO Optimizer Agent. Output highly targeted schema matrices, optimized landing page HTML copy, and metadata sets for Readeasy30, Matheasy30, and Ozark Webmasters pipelines.";
+      } else if (targetEndpointType === "finance") {
+        systemPrompt = "You are the High-Velocity Financial Autotrader Oracle. Analyze SPX option premium risk vectors, calculate ATR trailing target markers, and return programmatic mathematical signals.";
+      } else {
+        systemPrompt = "You are the G-Man Autonomous Website Generator Agent. Output full multi-page file sets containing interconnected code wrappers labeled clearly with FILE:filename design guidelines.";
+      }
 
-      const systemInputPayload = [designGuardrails, ...userMessages];
-
-      // 3. Native Model Execution Context Bindings
       const aiResponse = await env.AI.run("@cf/qwen/qwen3.8-27b", {
-        messages: systemInputPayload
+        messages: [{ role: "system", content: systemPrompt }, ...userMessages]
       });
 
-      const extractedCoreResponseText = aiResponse.response || aiResponse;
-
-      // 4. OpenAI Chat Completions Standard Serialization Delivery Protocol
       return new Response(JSON.stringify({
         id: `chatcmpl-${crypto.randomUUID()}`,
         object: "chat.completion",
         created: Math.floor(Date.now() / 1000),
-        model: "qwen-3.8-27b-edge-multipage-production",
-        choices: [{
-          index: 0,
-          message: { role: "assistant", content: extractedCoreResponseText },
-          finish_reason: "stop"
-        }]
+        model: "omniroute-unified-production-v4",
+        choices: [{ index: 0, message: { role: "assistant", content: aiResponse.response || aiResponse }, finish_reason: "stop" }]
       }), { headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" } });
-
-    } catch (globalClusterError) {
-      return new Response(JSON.stringify({ 
-        error: "OmniRoute Infrastructure Server Exception", 
-        details: globalClusterError.message 
-      }), { status: 500, headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" } });
+    } catch (err) {
+      return new Response(JSON.stringify({ error: "Unified Cluster Error", details: err.message }), { status: 500, headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" } });
     }
   }
 };
