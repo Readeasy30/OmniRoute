@@ -18,6 +18,13 @@ combos:
         model: gpt-4o
       - provider: pollinations # Zero-auth open pool used as the ultimate fail-safe backup node
         model: auto
+  - name: production-coder-stack
+    strategy: priority
+    nodes:
+      - provider: deepseek
+        model: deepseek-coder
+      - provider: moonshot
+        model: kimi-k-7.2  # Adds Kimi into your live tracking architecture
 
   - name: cost-optimized-stack
     strategy: cost_optimized # Selects underlying structures based on ongoing token tracking metrics
